@@ -5,6 +5,7 @@ import ConflictCounter from './components/ConflictCounter';
 import ResetModal from './components/ResetModal';
 import ThemeToggle from './components/ThemeToggle';
 import FloatingNumbers from './components/FloatingNumbers';
+import logoImg from './assets/logo.png';
 import { solve, getSolveSteps } from './utils/solver';
 import { getConflicts } from './utils/validator';
 import { SAMPLE_PUZZLE, EMPTY_BOARD } from './utils/puzzles';
@@ -242,12 +243,9 @@ export default function App() {
           {/* Header */}
           <header className="flex flex-col items-center gap-1">
             <div className="flex items-center gap-3">
-              {/* Grid icon */}
-              <div className="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center shadow-sm">
-                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm9-9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zm0 9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-                </svg>
+              {/* Logo */}
+              <div className="w-10 h-10 rounded-xl overflow-hidden shadow-md ring-1 ring-black/5 dark:ring-white/10 flex items-center justify-center bg-slate-900">
+                <img src={logoImg} alt="Sudoku Solver Logo" className="w-full h-full object-cover" draggable={false} />
               </div>
               <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
                 Sudoku Solver
@@ -309,6 +307,16 @@ export default function App() {
               noSolution={noSolution}
             />
           </div>
+
+          {/* Footer */}
+          <footer className="mt-6 flex flex-col items-center gap-1 opacity-80 hover:opacity-100 transition-opacity duration-300">
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
+              Built by <span className="text-blue-600 dark:text-blue-400">Aayush Nema</span>
+            </p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">
+              © {new Date().getFullYear()} Sudoku Solver. All rights reserved.
+            </p>
+          </footer>
         </div>
 
         {/* Right floating numbers column — fills full height */}
