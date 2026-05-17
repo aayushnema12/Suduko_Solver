@@ -4,6 +4,7 @@ import Controls from './components/Controls';
 import ConflictCounter from './components/ConflictCounter';
 import ResetModal from './components/ResetModal';
 import ThemeToggle from './components/ThemeToggle';
+import FloatingNumbers from './components/FloatingNumbers';
 import { solve, getSolveSteps } from './utils/solver';
 import { getConflicts } from './utils/validator';
 import { SAMPLE_PUZZLE, EMPTY_BOARD } from './utils/puzzles';
@@ -226,83 +227,100 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50 dark:from-[#0a0a0f] dark:via-[#131722] dark:to-[#0a0a0f] flex flex-col relative transition-colors duration-300">
       <ThemeToggle theme={theme} toggleTheme={toggleTheme} />
-      
-      {/* Header */}
-      <header className="w-full py-6 px-4 flex flex-col items-center gap-1">
-        <div className="flex items-center gap-3">
-          {/* Grid icon */}
-          <div className="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center shadow-sm">
-            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round"
-                d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm9-9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zm0 9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-            </svg>
+
+      {/* ── 3-column stretch layout ─────────────────────────────────── */}
+      <div className="flex flex-row flex-1 min-h-screen">
+
+        {/* Left floating numbers column — fills full height */}
+        <div className="flex-1 relative overflow-hidden">
+          <FloatingNumbers theme={theme} />
+        </div>
+
+        {/* Center column — all app content, no width restriction beyond content */}
+        <div className="flex flex-col items-center justify-start gap-6 py-6 px-4 pb-10">
+
+          {/* Header */}
+          <header className="flex flex-col items-center gap-1">
+            <div className="flex items-center gap-3">
+              {/* Grid icon */}
+              <div className="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center shadow-sm">
+                <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round"
+                    d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm0 9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm9-9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zm0 9a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+                </svg>
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
+                Sudoku Solver
+              </h1>
+            </div>
+            <p className="text-sm text-gray-400 dark:text-gray-500 font-medium">Enter your puzzle, then click Solve</p>
+          </header>
+
+          {/* Hint badge */}
+          <div className="text-xs text-gray-400 dark:text-gray-500 bg-white/70 dark:bg-slate-800/70 border border-gray-100 dark:border-slate-700 rounded-full px-3 py-1 shadow-sm">
+            💡 Use arrow keys to navigate · Tab to move forward · Backspace to clear
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white tracking-tight">
-            Sudoku Solver
-          </h1>
-        </div>
-        <p className="text-sm text-gray-400 dark:text-gray-500 font-medium">Enter your puzzle, then click Solve</p>
-      </header>
 
-      {/* Main content */}
-      <main className="flex-1 flex flex-col items-center justify-start px-4 pb-10 gap-6">
-        {/* Hint badge */}
-        <div className="text-xs text-gray-400 dark:text-gray-500 bg-white/70 dark:bg-slate-800/70 border border-gray-100 dark:border-slate-700 rounded-full px-3 py-1 shadow-sm">
-          💡 Use arrow keys to navigate · Tab to move forward · Backspace to clear
-        </div>
-
-        {/* Grid */}
-        <SudokuGrid
-          board={board}
-          cellTypes={cellTypes}
-          conflicts={conflicts}
-          focusedCell={focusedCell}
-          animatedCells={animatedCells}
-          onCellChange={handleCellChange}
-          onCellFocus={handleCellFocus}
-          onKeyDown={handleKeyDown}
-        />
-
-        {/* Conflict counter */}
-        <ConflictCounter count={conflictCount} />
-
-        {/* Legend */}
-        <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400">
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-white dark:bg-[#1a1e2b] border border-gray-300 dark:border-slate-600 inline-block" />
-            You
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800/50 inline-block" />
-            Hint
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 inline-block" />
-            Solved
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-3 h-3 rounded-sm bg-rose-100 dark:bg-rose-900/30 border border-red-200 dark:border-red-900/50 inline-block" />
-            Conflict
-          </span>
-        </div>
-
-        {/* Controls */}
-        <div className="w-full max-w-md bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-gray-100 dark:border-slate-700 rounded-2xl shadow-sm p-4">
-          <Controls
-            onSolve={handleSolve}
-            onHint={handleHint}
-            onUndo={handleUndo}
-            onReset={() => setShowResetModal(true)}
-            onLoadSample={handleLoadSample}
-            canUndo={history.length > 0}
-            isSolving={isSolving}
-            noSolution={noSolution}
+          {/* Grid — untouched */}
+          <SudokuGrid
+            board={board}
+            cellTypes={cellTypes}
+            conflicts={conflicts}
+            focusedCell={focusedCell}
+            animatedCells={animatedCells}
+            onCellChange={handleCellChange}
+            onCellFocus={handleCellFocus}
+            onKeyDown={handleKeyDown}
           />
+
+          {/* Conflict counter */}
+          <ConflictCounter count={conflictCount} />
+
+          {/* Legend */}
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-gray-500 dark:text-gray-400">
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm bg-white dark:bg-[#1a1e2b] border border-gray-300 dark:border-slate-600 inline-block" />
+              You
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800/50 inline-block" />
+              Hint
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 inline-block" />
+              Solved
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm bg-rose-100 dark:bg-rose-900/30 border border-red-200 dark:border-red-900/50 inline-block" />
+              Conflict
+            </span>
+          </div>
+
+          {/* Controls */}
+          <div className="w-full max-w-md bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-gray-100 dark:border-slate-700 rounded-2xl shadow-sm p-4">
+            <Controls
+              onSolve={handleSolve}
+              onHint={handleHint}
+              onUndo={handleUndo}
+              onReset={() => setShowResetModal(true)}
+              onLoadSample={handleLoadSample}
+              canUndo={history.length > 0}
+              isSolving={isSolving}
+              noSolution={noSolution}
+            />
+          </div>
         </div>
-      </main>
+
+        {/* Right floating numbers column — fills full height */}
+        <div className="flex-1 relative overflow-hidden">
+          <FloatingNumbers theme={theme} />
+        </div>
+
+      </div>
 
       {/* Reset modal */}
       {showResetModal && (
+
         <ResetModal
           onConfirm={handleReset}
           onCancel={() => setShowResetModal(false)}
