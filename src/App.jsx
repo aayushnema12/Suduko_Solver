@@ -254,11 +254,6 @@ export default function App() {
             <p className="text-sm text-gray-400 dark:text-gray-500 font-medium">Enter your puzzle, then click Solve</p>
           </header>
 
-          {/* Hint badge */}
-          <div className="text-xs text-gray-400 dark:text-gray-500 bg-white/70 dark:bg-slate-800/70 border border-gray-100 dark:border-slate-700 rounded-full px-3 py-1 shadow-sm">
-            💡 Use arrow keys to navigate · Tab to move forward · Backspace to clear
-          </div>
-
           {/* Grid — untouched */}
           <SudokuGrid
             board={board}
