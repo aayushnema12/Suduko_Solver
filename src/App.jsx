@@ -5,6 +5,8 @@ import ConflictCounter from './components/ConflictCounter';
 import ResetModal from './components/ResetModal';
 import ThemeToggle from './components/ThemeToggle';
 import FloatingNumbers from './components/FloatingNumbers';
+import CameraModal from './components/CameraModal';
+import ToastNotification from './components/ToastNotification';
 import logoImg from './assets/logo.png';
 import { solve, getSolveSteps } from './utils/solver';
 import { getConflicts } from './utils/validator';
@@ -26,6 +28,8 @@ export default function App() {
   const [isSolving, setIsSolving] = useState(false);
   const [noSolution, setNoSolution] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
+  const [showCameraModal, setShowCameraModal] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
   const [theme, setTheme] = useState('light');
 
   // ── theme effect ────────────────────────────────────────────────────────────
@@ -222,6 +226,18 @@ export default function App() {
     setFocusedCell(null);
   }, [board, cellTypes, pushHistory, applyBoard]);
 
+  // ── handle camera capture ───────────────────────────────────────────────────
+  const handleCameraCapture = useCallback((scannedBoard) => {
+    pushHistory(board, cellTypes);
+    const newBoard = cloneBoard(scannedBoard);
+    const newTypes = newBoard.map((row) =>
+      row.map((v) => (v !== 0 ? 'user' : 'empty'))
+    );
+    hintSolvedRef.current = null;
+    applyBoard(newBoard, newTypes);
+    setFocusedCell(null);
+  }, [board, cellTypes, pushHistory, applyBoard]);
+
   // ── render ──────────────────────────────────────────────────────────────────
   const conflictCount = conflicts.size;
 
@@ -297,6 +313,7 @@ export default function App() {
               onUndo={handleUndo}
               onReset={() => setShowResetModal(true)}
               onLoadSample={handleLoadSample}
+              onCamera={() => setShowCameraModal(true)}
               canUndo={history.length > 0}
               isSolving={isSolving}
               noSolution={noSolution}
@@ -329,6 +346,21 @@ export default function App() {
           onCancel={() => setShowResetModal(false)}
         />
       )}
+
+      {/* Camera modal */}
+      {showCameraModal && (
+        <CameraModal
+          onSuccess={handleCameraCapture}
+          onError={(msg) => setToastMessage(msg)}
+          onClose={() => setShowCameraModal(false)}
+        />
+      )}
+
+      {/* Toast Notification */}
+      <ToastNotification 
+        message={toastMessage} 
+        onClose={() => setToastMessage('')} 
+      />
     </div>
   );
 }
