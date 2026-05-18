@@ -30,13 +30,6 @@ const IconSample = () => (
   </svg>
 );
 
-const IconCamera = () => (
-  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-    <path strokeLinecap="round" strokeLinejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
-    <path strokeLinecap="round" strokeLinejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-);
-
 const ControlButton = ({ onClick, disabled, label, icon, variant = 'default', className = '' }) => {
   const variants = {
     default: `bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-600 text-gray-700 dark:text-slate-200
@@ -50,9 +43,6 @@ const ControlButton = ({ onClick, disabled, label, icon, variant = 'default', cl
       disabled:opacity-40 disabled:cursor-not-allowed`,
     success: `bg-emerald-500 border border-emerald-500 text-white
       hover:bg-emerald-600 hover:border-emerald-600
-      disabled:opacity-40 disabled:cursor-not-allowed`,
-    purple: `bg-purple-500 border border-purple-500 text-white
-      hover:bg-purple-600 hover:border-purple-600
       disabled:opacity-40 disabled:cursor-not-allowed`,
   };
 
@@ -79,7 +69,6 @@ const Controls = ({
   onUndo,
   onReset,
   onLoadSample,
-  onCamera,
   canUndo,
   isSolving,
   noSolution,
@@ -107,13 +96,6 @@ const Controls = ({
           icon={<IconUndo />}
           variant="default"
           disabled={!canUndo || isSolving}
-        />
-        <ControlButton
-          onClick={onCamera}
-          label="Scan"
-          icon={<IconCamera />}
-          variant="purple"
-          disabled={isSolving}
         />
         <ControlButton
           onClick={onLoadSample}
